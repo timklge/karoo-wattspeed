@@ -55,9 +55,9 @@ tasks.register("generateManifest") {
         val baseUrl = System.getenv("BASE_URL") ?: "https://github.com/timklge/karoo-wattspeed/releases/latest/download"
         val manifestFile = file("$projectDir/manifest.json")
         val manifest = mapOf(
-            "label" to "Touchpad",
+            "label" to "WattSpeed",
             "packageName" to "de.timklge.karoowattspeed",
-            "iconUrl" to "$baseUrl/karoo-touchpad.png",
+            "iconUrl" to "$baseUrl/karoo-wattspeed.png",
             "latestApkUrl" to "$baseUrl/app-release.apk",
             "latestVersion" to android.defaultConfig.versionName,
             "latestVersionCode" to android.defaultConfig.versionCode,
