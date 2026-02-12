@@ -8,6 +8,9 @@ Simple karoo extension that provides speed values based on power when riding ind
 
 Compatible with Karoo 2 and Karoo 3 devices.
 
+![Sensor](sensor.png)
+![Values](values.png)
+
 ## What problem does this solve?
 
 When riding on a smart trainer indoors, the Karoo will report the speed values provided by the trainer.

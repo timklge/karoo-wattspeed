@@ -56,9 +56,8 @@ jobs:
           app/build/outputs/apk/release/app-release.apk
           app/manifest.json
           app/karoo-touchpad.png
-          menu.png
-          profile.png
-          datapage.png
+          sensor.png
+          values.png
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

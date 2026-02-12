@@ -62,12 +62,11 @@ tasks.register("generateManifest") {
             "latestVersion" to android.defaultConfig.versionName,
             "latestVersionCode" to android.defaultConfig.versionCode,
             "developer" to "github.com/timklge",
-            "description" to "Open-source extension that provides a virtual speedometer for indoor riding to calculate speed based from power",
+            "description" to "Open-source extension that provides a virtual speedometer for indoor riding. Speed is calculated based on power, independant from the speed reported by the trainer..",
             "releaseNotes" to "* Initial commit",
             "screenshotUrls" to listOf(
-                "$baseUrl/menu.png",
-                "$baseUrl/profile.png",
-                "$baseUrl/datapage.png",
+                "$baseUrl/sensor.png",
+                "$baseUrl/values.png",
             )
         )
 
