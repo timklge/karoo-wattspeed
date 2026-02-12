@@ -10,7 +10,7 @@ android {
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "de.timklge.karootouchpad"
+        applicationId = "de.timklge.karoowattspeed"
         minSdk = 28
         targetSdk = 34
         versionCode = 100 + (System.getenv("BUILD_NUMBER")?.toInt() ?: 1)
