@@ -391,12 +391,12 @@ fun MainScreen(onFinish: () -> Unit) {
                         Spacer(modifier = Modifier.size(8.dp))
 
                         val profile by karooSystem.karooSystemService.streamUserProfile().collectAsStateWithLifecycle(null)
-                        var power by remember { mutableStateOf<Double?>(null) }
+                        var power by remember { mutableStateOf<Int?>(null) }
                         var speed by remember { mutableStateOf<Double?>(null) }
 
                         LaunchedEffect(Unit) {
                             karooSystem.karooSystemService.streamDataFlow(DataType.Type.POWER).collect { powerValue ->
-                                power = (powerValue as? StreamState.Streaming)?.dataPoint?.singleValue
+                                power = (powerValue as? StreamState.Streaming)?.dataPoint?.singleValue?.toInt()
                             }
                         }
 
