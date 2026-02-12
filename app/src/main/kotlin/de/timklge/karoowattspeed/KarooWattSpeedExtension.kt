@@ -23,6 +23,8 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
+import java.time.Duration
+import java.time.Instant
 
 class KarooWattSpeedExtension : KarooExtension(TAG, "1.0") {
 
@@ -32,6 +34,7 @@ class KarooWattSpeedExtension : KarooExtension(TAG, "1.0") {
         const val DEVICE_FULL_UID = "$TAG::$DEVICE_UID"
         const val UPDATE_INTERVAL = 500L
         const val TRAVELED_DISTANCE_DATA_TYPE_ID = "TYPE_SPD_DISTANCE_DIFF_ID"
+        const val MAX_ACCELERATION = 5.0 // Maximum acceleration in m/s² (realistic for a bicycle)
     }
 
     private val karooSystem: KarooSystemServiceProvider by inject()
@@ -68,6 +71,7 @@ class KarooWattSpeedExtension : KarooExtension(TAG, "1.0") {
                         coroutineScope {
                             var lastPowerData: Double? = null
                             var lastCalculatedSpeed = 0.0
+                            var lastPowerSuppliedAt: Instant? = null
 
                             launch {
                                 karooSystem.karooSystemService.streamDataFlow(DataType.Type.POWER).collect { powerData ->
@@ -77,7 +81,8 @@ class KarooWattSpeedExtension : KarooExtension(TAG, "1.0") {
 
                             while (isActive) {
                                 val lastPower = lastPowerData ?: 0.0
-                                val calculatedSpeedInMs = calculateSpeedFromPower(lastCalculatedSpeed, lastPower, userProfile.weight.toDouble())
+                                if (lastPower > 0) lastPowerSuppliedAt = Instant.now()
+                                val calculatedSpeedInMs = calculateSpeedFromPower(lastCalculatedSpeed, lastPower, userProfile.weight.toDouble(), lastPowerSuppliedAt)
                                 lastCalculatedSpeed = calculatedSpeedInMs
 
                                 Log.i(TAG, "Emitting speed data point: $calculatedSpeedInMs m/s based on power: $lastPower W")
@@ -116,7 +121,7 @@ class KarooWattSpeedExtension : KarooExtension(TAG, "1.0") {
     /**
      * Calculate speed in m/s based on current power in watts, user weight in kg, and the last known speed [currentSpeed].
      */
-    private fun calculateSpeedFromPower(currentSpeed: Double, power: Double, userWeight: Double): Double {
+    private fun calculateSpeedFromPower(currentSpeed: Double, power: Double, userWeight: Double, lastPowerSuppliedAt: Instant?): Double {
         // Constants for road bike aero position and tarmac rolling resistance
         val rho = 1.225 // Air density (kg/m^3) at sea level
         val g = 9.81    // Gravity (m/s^2)
@@ -145,8 +150,24 @@ class KarooWattSpeedExtension : KarooExtension(TAG, "1.0") {
         // Update velocity: v_new = v_old + a × Δt
         val newSpeed = currentSpeed + (acceleration * deltaTime)
 
+        // Limit acceleration to maximum value
+        val maxAcceleration = MAX_ACCELERATION * deltaTime
+        val limitedSpeed = if (acceleration > maxAcceleration) {
+            currentSpeed + maxAcceleration
+        } else if (acceleration < -maxAcceleration) {
+            currentSpeed - maxAcceleration
+        } else {
+            newSpeed
+        }
+
+        if (lastPowerSuppliedAt != null && lastPowerSuppliedAt < Instant.now().minus(Duration.ofSeconds(3))) {
+            // If no power has been supplied for more than 5 seconds, assume the rider has stopped pedaling and apply a stronger deceleration
+            val coastingDeceleration = 2.0 * deltaTime // Coasting deceleration in m/s²
+            return maxOf(0.0, limitedSpeed - coastingDeceleration)
+        }
+
         // Speed cannot be negative
-        return maxOf(0.0, newSpeed)
+        return maxOf(0.0, limitedSpeed)
     }
 
     override fun onDestroy() {

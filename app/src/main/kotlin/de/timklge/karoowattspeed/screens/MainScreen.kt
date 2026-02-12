@@ -414,8 +414,8 @@ fun MainScreen(onFinish: () -> Unit) {
                             )
                         ) {
                             val speedInUserUnit = when (profile?.preferredUnit?.distance) {
-                                UserProfile.PreferredUnit.UnitType.METRIC -> "${speed?.times(3.6)} km/h"
-                                UserProfile.PreferredUnit.UnitType.IMPERIAL -> "${speed?.times(2.23694)} mph"
+                                UserProfile.PreferredUnit.UnitType.METRIC -> speed?.times(3.6)?.let { String.format("%.1f km/h", it) }
+                                UserProfile.PreferredUnit.UnitType.IMPERIAL -> speed?.times(2.23694)?.let { String.format("%.1f mph", it) }
                                 else -> null
                             }
 
