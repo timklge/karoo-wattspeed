@@ -4,7 +4,7 @@
 [![GitHub Downloads (specific asset, all releases)](https://img.shields.io/github/downloads/timklge/karoo-wattspeed/app-release.apk)](https://github.com/timklge/karoo-wattspeed/releases)
 ![GitHub License](https://img.shields.io/github/license/timklge/karoo-wattspeed)
 
-Simple karoo extension that provides speed values based on power when riding indoors.
+Simple karoo extension that provides speed values based on power when riding indoors. It assumes ideal conditions (good aero position on a road bike) while factoring in your weight set in your Karoo profile.
 
 Compatible with Karoo 2 and Karoo 3 devices.
 
