@@ -11,7 +11,7 @@ android {
 
     defaultConfig {
         applicationId = "de.timklge.karoowattspeed"
-        minSdk = 28
+        minSdk = 26
         targetSdk = 34
         versionCode = 100 + (System.getenv("BUILD_NUMBER")?.toInt() ?: 1)
         versionName = System.getenv("RELEASE_VERSION") ?: "1.0"
@@ -63,7 +63,7 @@ tasks.register("generateManifest") {
             "latestVersionCode" to android.defaultConfig.versionCode,
             "developer" to "github.com/timklge",
             "description" to "Open-source extension that provides a virtual speedometer for indoor riding. Speed is calculated based on power, independant from the speed reported by the trainer..",
-            "releaseNotes" to "* Initial commit",
+            "releaseNotes" to "* Lowered minimum SDK to 26 for Karoo 2 compatibility",
             "screenshotUrls" to listOf(
                 "$baseUrl/sensor.png",
                 "$baseUrl/values.png",
